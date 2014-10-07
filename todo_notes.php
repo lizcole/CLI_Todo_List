@@ -44,3 +44,4 @@ echo "Goodbye!\n";
 
 // Exit with 0 errors
 exit(0);
+
