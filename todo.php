@@ -13,7 +13,9 @@ function listItems($list){
     return $string;
 }
 
-// this 
+// this allows user input to be lower case and will change it appropriatly to uppercase
+// If you want it to be uppercase you need to inter in (true) to getInput() so it will
+// overide the set (false)
 function getInput($upper = false) {   
     if ($upper) {
         return strtoupper(trim(fgets(STDIN)));
@@ -23,16 +25,19 @@ function getInput($upper = false) {
     }
 }
 
-
+// this function brings up a submenu for (S)ort allowing you to pick which way to 
+// sort the array.
+// we referenced sortMenu($items) within in case 'S'
 function sortMenu($items) {
     echo '(A)-Z, (Z)-A, (O)rder enter, (R)everse order entered : ';
     $input = getInput(true);
         switch($input) {
             case 'A':
-                asort($items);
+                natcasesort($items);
                 break;
             case 'Z':
-                arsort($items);
+                natcasesort($items);
+                $items = array_reverse($items);
                 break;
             case 'O':
                 ksort($items);
@@ -47,11 +52,36 @@ function sortMenu($items) {
     return $items;
 }
 
+function openFile($items) {
+    // open file
+    $filename = getInput();
+    $openFile = fopen($filename, 'r');
+    $readFile = fread($openFile, filesize($filename));
+    $fileArray = explode("\n", $readFile);
+    fclose($openFile);
+    // add file to exisiting list
+    $combinedList = array_merge($items, $fileArray);
+    return $combinedList;
+}
+
+function saveFile($items) {
+    $fileName = getInput();
+    $openFile = fopen($fileName, 'w+');
+    foreach ($items as $listItem) {
+        fwrite($openFile, $listItem . PHP_EOL);
+    }
+    fclose($openFile);
+}
+
+// This is a do/while with a switchcase to allow users to enter new items.
 do {
     echo listItems($items); 
  
-    echo '(N)ew item, (R)emove item, (S)ort, (Q)uit : ';
-    
+    echo '(N)ew item, (O)pen file, (R)emove item, (S)ort, (Q)uit, s(A)ve : ';
+
+// Assigning $input = getInput(true) allows any choice that is input
+// to follow the getInput function rules
+
     $input = getInput(true);
 
     switch($input) {
@@ -59,6 +89,8 @@ do {
             echo 'Enter item: ';
             $newItem = getInput();
             echo '(B)eginning or (E)nd?: ';
+            //assigning $choice to getInput(true) allows you to reference it
+            // in your if/else statement
             $choice = getInput(true);
                 if($choice == 'B') {
                     array_unshift($items, $newItem);
@@ -76,12 +108,22 @@ do {
         case 'S':
             $items = sortMenu($items);
             break;
+        // F and L are hidden functions not echo'd out as an option
         case 'F':
             array_shift($items);
             break;
         case 'L':
             array_pop($items);
             break;
+        case 'O':
+            echo 'Please enter file path: ';
+            $items = openFile($items);
+            break;
+        case 'A':
+            echo 'Please enter file path: ';
+            saveFile($items);
+            break;
+
     }
 
 } while ($input != 'Q');
