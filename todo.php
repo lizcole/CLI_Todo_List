@@ -56,7 +56,8 @@ function openFile($items) {
     // open file
     $filename = getInput();
     $openFile = fopen($filename, 'r');
-    $readFile = fread($openFile, filesize($filename));
+    $readFile = (fread($openFile, filesize($filename));
+    trim($readFile);
     $fileArray = explode("\n", $readFile);
     fclose($openFile);
     // add file to exisiting list
@@ -66,11 +67,19 @@ function openFile($items) {
 
 function saveFile($items) {
     $fileName = getInput();
-    $openFile = fopen($fileName, 'w+');
-    foreach ($items as $listItem) {
+        if (file_exists($fileName)) {
+        fwrite(STDOUT, "File already exists. Save and replace existing file? [Y}es or [No]");
+        $confirm = getInput();
+            if ($confirm == 'n') {
+                frwrite(STDOUT, 'Save Cancelled.' . PHP_EOL);
+      } else{
+        $openFile = fopen($fileName, 'w+');
+        foreach ($items as $listItem) {
         fwrite($openFile, $listItem . PHP_EOL);
     }
+    }
     fclose($openFile);
+}
 }
 
 // This is a do/while with a switchcase to allow users to enter new items.
@@ -122,6 +131,7 @@ do {
         case 'A':
             echo 'Please enter file path: ';
             saveFile($items);
+            echo 'Your list is up-to-date: ';
             break;
 
     }

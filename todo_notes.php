@@ -1,6 +1,8 @@
 <?php
 
-<?php
+// $key is equal to [0] [1] [2] [3] etc. thus you need to increment it by one(++) 
+// to get it to start at '[1]' and then you need to decrement it by one(--) for deleting 
+// the list item, so the cl reads the correct array item to remove.
 
 // Create array to hold list of todo items
 $items = array();
@@ -45,3 +47,4 @@ echo "Goodbye!\n";
 // Exit with 0 errors
 exit(0);
 
+//PHP_EOL; use intead of /n
